@@ -13,6 +13,7 @@ end
 template 'ngx_mruby_builld_config' do
   source 'ngx_build_config.erb'
   path "#{::File.join(node[:mruby][:build_dir],'ngx_mruby/build_config.rb')}"
+  variables node[:mruby][:ngx_mruby]
 end
 
 bash 'sync_built_mruby' do

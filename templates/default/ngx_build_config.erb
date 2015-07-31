@@ -27,6 +27,11 @@ MRuby::Build.new do |conf|
   # ngx_mruby extended class
   conf.gem :github => 'matsumoto-r/mruby-ngx-mruby-ext'
 
+  # from chef attributes
+  <% @gems.each do |gem| %>
+  conf.gem <%= gem[0] %> => '<%= gem[1] %>'
+  <% end %>
+
   # use memcached
   # conf.gem :github => 'matsumoto-r/mruby-memcached'
 

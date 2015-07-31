@@ -1,7 +1,7 @@
 mruby Cookbook
 ==============
 
-This cookbook installs mruby. 
+This cookbook installs mruby.
 
 - /usr/local/bin/mruby
 - /usr/local/bin/mirb
@@ -73,11 +73,15 @@ node[:mruby][:build_options][:user_gems] = [
 - `node[:mruby][:depend_pkgs]` - packcage dependencies(`action :upgrade`)
   - default: `['git','rsync']`
 
+- `node[:mruby][:ngx_mruby][:depend_pkgs]` - packcage dependencies(`action :upgrade`)
+  - default: `[]`
+
 ### ngx_mruby.rb
 
 - `node[:mruby][:ngx_mruby][:git_refernce]` - branch or tag of ngx_mruby repository
   - default: `'master'`
-
+- `node[:mruby][:ngx_mruby][:gems]` - gem to ngx_mruby
+  - default: `[]`
 
 ### mod_mruby.rb
 
@@ -171,7 +175,7 @@ ChefClient converges below.
 ```
 # /opt/nginx-1.4.2/sbin/nginx -V
 nginx version: nginx/1.4.2
-built by gcc 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5) 
+built by gcc 4.6.3 (Ubuntu/Linaro 4.6.3-1ubuntu5)
 TLS SNI support enabled
 configure arguments:
 --prefix=/opt/nginx-1.4.2
@@ -194,8 +198,10 @@ configure arguments:
 {
   "run_list" : [
     "recipe[build-essential::default]",
-    "recipe[mruby::ngx_mruby]",
-    "recipe[nginx]"
+    "recipe[mruby::depends]",
+    "recipe[nginx]",
+    "recipe[mruby]",
+    "recipe[mruby::ngx_mruby]"
   ],
   "mruby": {
     "force_rebuild" : true,
@@ -203,6 +209,13 @@ configure arguments:
        "user_gems" : [
           [":git", "https://github.com/iij/mruby-io.git"]
         ]
+    },
+    "ngx_mruby": {
+      "depend_pkgs": ["libcgroup-dev"],
+      "gems": [
+        [":github", "matsumoto-r/mruby-discount"],
+        [":github", "matsumoto-r/mruby-cgroup"]
+      ]
     }
   },
   "nginx" : {
@@ -217,7 +230,8 @@ configure arguments:
       "http_geoip_module",
       "http_realip_module",
       "http_stub_status_module",
-      "http_gzip_static_module"
+      "http_gzip_static_module",
+      "mruby::ngx_mruby"
     ]
     }
   }
@@ -348,4 +362,3 @@ License and Authors
 Authors:  Yukihiko Sawanobori (HiganWorks LLC)
 
 under MIT License
-
